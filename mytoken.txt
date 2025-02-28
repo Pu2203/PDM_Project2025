@@ -1,0 +1,9 @@
+https://github.com/NgQsang
+
+git remote set-url origin https://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@github.com/NgQsang/PDM_Project2025
+
+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
+
+
+git clone https://NgQsang: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@github.com/Pu2203/PDM_Project2025.git
+
