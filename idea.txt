@@ -1,0 +1,151 @@
+- Tôi đang làm project Predictive Maintenance System for Industrial Equipment using Apache Spark 
+- Tôi đã xong công đoạn Data Processing and Analysis Pipeline using Spark.
+- Đây là Model Development Outline:
+Output 1: Alert System (Danger, Warning, Normal) - đã hoàn thành
+Output 2: Maintenance Recommendation System - đã hoàn thành
+Output 3: Remaining days to maintenance system (based on output 2 == "No maintenance required").
+Tôi cần bạn giúp tôi hoàn thành code cho Output 3: Remaining days to maintenance system dựa trên các ý sau:
+
+### Phương pháp 1: Phương pháp dựa trên mức độ sử dụng
+- Bước 1: Tính toán Mức Sử Dụng Trung Bình Hàng Ngày
+Sử dụng dữ liệu từ bảng Dữ liệu Hoạt động để tính toán mức sử dụng trung bình của thiết bị, bao gồm:
+Số giờ vận hành hàng ngày: Tổng hợp số giờ thiết bị hoạt động mỗi ngày trong một khoảng thời gian nhất định (ví dụ: 30 ngày gần nhất) và tính trung bình.
+Tỷ lệ sản xuất: Tính tỷ lệ sản xuất trung bình mỗi ngày, có thể là % công suất tối đa của thiết bị.
+Thời gian ngừng hoạt động: Tính số giờ thiết bị ngừng hoạt động trung bình mỗi ngày. Thời gian ngừng hoạt động có thể ảnh hưởng đến nhu cầu bảo trì, do thiết bị ít hoạt động có thể cần bảo trì ít thường xuyên hơn.
+- Bước 2: Xác Định Ngưỡng Hoạt Động Dẫn Đến Bảo Trì
+Dựa trên dữ liệu lịch sử bảo trì từ Nhật ký Bảo trì, xác định ngưỡng hoạt động (tính bằng số giờ vận hành hoặc tổng số giờ hoạt động) dẫn đến lần bảo trì gần nhất. Đây là số giờ hoặc sản lượng sản xuất mà thiết bị thường cần được bảo trì sau khi đạt ngưỡng này.
+Ví dụ, nếu dữ liệu lịch sử cho thấy sau mỗi 1,000 giờ hoạt động, thiết bị cần bảo trì, thì ngưỡng hoạt động của bạn là 1,000 giờ.
+- Bước 3: Dự Báo Số Ngày Đạt Ngưỡng Hoạt Động
+Tính số giờ còn lại đến khi thiết bị đạt ngưỡng hoạt động:
+Số giờ còn lại = Ngưỡng hoạt động – Tổng số giờ vận hành hiện tại
+Tổng số giờ vận hành hiện tại có thể được tính từ lần bảo trì gần nhất đến ngày hiện tại.
+Dự đoán số ngày còn lại để đạt ngưỡng hoạt động dựa trên mức sử dụng trung bình:
+Số ngày còn lại = Số giờ còn lại / Số giờ vận hành trung bình mỗi ngày
+Ví dụ, nếu ngưỡng hoạt động là 1,000 giờ và thiết bị đã vận hành 800 giờ từ lần bảo trì cuối cùng, số giờ còn lại sẽ là 200. Giả sử số giờ vận hành trung bình mỗi ngày là 10 giờ, thì số ngày còn lại để căn bảo trì là: 200/10 = 20 ngày.
+
+### Phương pháp 2: Phương pháp dựa trên lịch sử bảo trì
+- 1. Phân Tích Nhật Ký Bảo Trì để Xác Định Ngưỡng Hoạt Động
+Trong Nhật ký bảo trì, bạn có các thông tin sau có thể hữu ích:
+Ngày bảo trì: Ngày bảo trì cho mỗi thiết bị.
+Loại bảo trì: Loại bảo trì thực hiện (định kỳ, sửa chữa, thay thế, kiểm tra, v.v.).
+Cách làm:
+Xác định khoảng thời gian giữa các lần bảo trì cho mỗi thiết bị (tính từ ngày bảo trì lần trước đến ngày bảo trì làn tiếp theo).
+Dựa trên dữ liệu Dữ liệu hoạt động, tính tổng số giờ vận hành của thiết bị trong khoảng thời gian giữa hai lần bảo trì liên tiếp.
+Từ đó, bạn sẽ có thể xác định một ngưỡng hoạt động trung bình cho mỗi thiết bị (ví dụ, nếu trung bình mỗi 1,000 giờ vận hành thiết bị cần bảo trì, thì 1,000 giờ sẽ là ngưỡng hoạt động).
+- 2. Phân Tích Dữ Liệu Hoạt Động để Tính Số Giờ Hoạt Động Giữa Các Lần Bảo Trì
+Trong Dữ liệu hoạt động, bạn có thể sử dụng các cột sau:
+operating_hours: Số giờ hoạt động của thiết bị trong ngày.
+• date: Ngày của dữ liệu hoạt động.
+Cách làm:
+Tổng hợp số giờ hoạt động (từ cột operating hours) giữa hai ngày bảo trì liên tiếp.
+Lặp lại quy trình này cho nhiều khoảng thời gian bảo trì để có ngưỡng hoạt động trung bình cho thiết bị.
+
+### Phương pháp 3: Phương pháp dựa trên điểm số sức khỏe
+- Bước 1: Xây dựng Hệ thống Tính Điểm Sức Khỏe (Health Score)
+Xác định các chỉ số quan trọng: Từ các dữ liệu cảm biến và hoạt động của thiết bị, xác định các chỉ số có ảnh hưởng lớn đến tuổi thọ và hiệu suất của thiết bị, chẳng hạn như nhiệt độ, áp suất, độ rung, tốc độ quay, v.v.
+Xác định trọng số cho từng chỉ số: Các chỉ số này sẽ đóng góp với mức độ khác nhau vào điểm sức khỏe tổng thể của thiết bị. Ví dụ, nếu độ rung là yếu tố quan trọng hơn cho thiết bị của bạn, hãy gán trọng số cao hơn cho độ rung.
+Xây dựng công thức tính điểm sức khỏe: Một công thức phổ biến là tổng hợp các chỉ số này theo trọng số để tạo ra một điểm số tổng thế. Điểm số này thường được chuẩn hóa trong thang điểm từ 0 đến 100, trong đó:
+100: Thiết bị ở trạng thái hoàn hảo, không cần bảo trì.
+0: Thiết bị cần bảo trì ngay lập tức.
+Ví dụ về công thức:
+Health Score = 100 (w₁ × temperature_score + w2 × vibration_score + w3 × pressure_score +...)
+Trong đó:
+w1, w2, w3,... là các trọng số đã xác định cho mỗi chỉ số.
+temperature_score, vibration_score,... là các giá trị chuẩn hóa cho mỗi chỉ số (giá trị càng cao khi chỉ số càng tiến gần đến ngưỡng giới hạn).
+- Bước 2: Theo Dõi Xu Hướng Thay Đổi của Điểm Sức Khỏe
+Ghi nhận điểm sức khỏe theo thời gian: Tính toán điểm sức khỏe của thiết bị định kỳ (hàng ngày, hàng tuần, hoặc theo giờ nếu dữ liệu cho phép).
+Lưu trữ và vẽ biểu đồ xu hướng: Lưu lại các điểm sức khỏe trong một khoảng thời gian nhất định để theo dõi xu hướng thay đổi của sức khỏe thiết bị.
+Xác định tốc độ suy giảm điểm số: Dựa trên biểu đồ xu hướng, tính toán tốc độ suy giảm điểm sức khỏe theo thời gian, tức là số điểm mất đi mỗi ngày hoặc mỗi giờ (tùy thuộc vào tần suất bạn ghi nhận điểm số).
+- Bước 3: Dự Đoán Số Ngày Còn Lại Dựa Trên Tốc Độ Suy Giảm
+Sau khi tính toán được tốc độ suy giảm điểm sức khỏe, bạn có thể ước tính số ngày còn lại trước khi thiết bị cần bảo trì bằng công thức sau:
+Số ngày còn lại = (Điểm số hiện tại - Điểm số ngưỡng) / Tốc độ suy giảm điểm số mỗi ngày
+Trong đó:
+Điểm số hiện tại là điểm sức khỏe của thiết bị tại thời điểm dự đoán.
+Điểm số ngưỡng là giá trị điểm mà bạn quyết định cần thực hiện bảo trì (ví dụ, dưới 30 hoặc 20).
+Tốc độ suy giảm điểm số mỗi ngày có thể được tính bằng cách lấy chênh lệch điểm số giữa hai lần đo liên tiếp và chia cho số ngày giữa hai làn đo.
+
+Sau khi có kết quả từ ba phương pháp (dựa trên mức độ sử dụng, khoảng cách bảo trì lịch sử, và điểm số sức khỏe), bạn có thể sử dụng phương pháp tổng hợp kết quả sau:
+1. Phương Pháp Trung Bình Có Trọng Số
+Mỗi phương pháp có thể phản ánh một khía cạnh khác nhau của thiết bị và có mức độ quan trọng khác nhau. Bạn có thể gán trọng số cho từng phương pháp và tính trung bình có trọng số để đạt được kết quả cuối cùng.
+Cách làm:
+Gán trọng số cho từng phương pháp dựa trên độ tin cậy và mức độ phú hợp của mỗi phương pháp đối với thiết bị. Ví dụ:
+• Phương pháp dựa trên mức độ sử dụng (phương pháp 2): 40%
+Phương pháp dựa trên lịch sử bảo trì (phương pháp 3): 30%
+Phương pháp dựa trên điểm số sức khỏe (phương pháp 4): 30%
+Công thức tỉnh trung bình có trọng số:
+Số ngày còn lại (tổng hợp) = (Kết quả phương pháp 2 × 0.4) + (Kết quả phương pháp 3 x 0.3) + (Kết quả phương pháp 4 × 0.3)
+Ví dụ:
+• Nếu phương pháp 2 dự đoán 20 ngày, phương pháp 3 dự đoàn 30 ngày, và phương pháp 4 dự đoàn 25 ngày, thì:
+Số ngày còn lại (tổng hợp) = (20 x 0.4) + (30 x 0.3) + (25 x 0.3)=8+9+ 7.5 = 24.5 ngày
+
+đây là tất cả các column của dataset, hãy chọn feature phù hợp tương ứng các phương pháp trên:
+equipment_id, timestamp, temperature, vibration, pressure, rotational_speed, power_output, noise_level, voltage, current, oil_viscosity, model, manufacturer, installation_date, max_temperature, max_pressure, max_rotational_speed, expected_lifetime_years, warranty_period_years, last_major_overhaul, location, criticality, maintenance_type, description, technician_id, duration_hours, cost, parts_replaced, maintenance_result, maintenance_date, production_rate, operating_hours, downtime_hours, operator_id, product_type, raw_material_quality, ambient_temperature, ambient_humidity, operation_date, days_since_maintenance, equipment_age_days, days_since_overhaul, temp_pct_of_max, pressure_pct_of_max, speed_pct_of_max, cumulative_maintenance_cost, cumulative_operating_hours, estimated_rul, criticality_encoded, maintenance_type_encoded, maintenance_result_encoded, product_type_encoded, raw_material_quality_encoded, parts_replaced_encoded, temperature_alert, pressure_alert, rotational_speed_alert, power_output_alert, noise_level_alert, voltage_alert, current_alert, oil_viscosity_alert, alert, alert_score, age_condition_score, downtime_condition_score, maintenance_condition_score, environment_condition_score, criticality_avg_annual_cost, threshold, maintenance_cost_condition_score, operational_score, total_score, maintenance_needed
+
+
+Develop Python code for Output 3: Remaining Days to Maintenance System for a Predictive Maintenance System using Apache Spark. The system predicts the remaining days to maintenance by implementing three methods and a weighted average combination of their results (only when Output 2 == "No maintenance required").
+
+Input Dataset:
+The dataset contains a column "maintenance_needed" that indicates whether maintenance is required or not, with values "No maintenance required" and "Maintenance required".
+Only process records where "maintenance_needed" == "No maintenance required".
+
+Method 1: Usage-based Approach
+Step 1 - Calculate average daily usage:
+- Use features:
+    + "operating_hours": Average daily operating hours over a recent period (e.g., last 30 days).
+    + "production_rate": Average daily production rate as a percentage of maximum capacity.
+    + "downtime_hours": Average daily downtime hours, indicating maintenance needs.
+- Aggregate data to compute averages.
+Step 2 - Determine operation threshold:
+- Use historical maintenance logs ("maintenance_date", "operating_hours").
+- Identify the operational threshold in hours, e.g., 1000 operating hours before maintenance.
+Step 3 - Predict remaining days:
+- Calculate remaining hours = threshold - cumulative hours since last maintenance ("days_since_maintenance", "operating_hours").
+- Divide remaining hours by average daily usage.
+Step 4 - Add results to dataset:
+- Append a new column "remaining_days_method1" containing results for each piece of equipment.
+Method 2: Historical Maintenance Analysis
+Step 1: Use "maintenance_date" and "operating_hours" to compute the time and operating hours between consecutive maintenance events.
+Step 2: Aggregate data for multiple maintenance intervals to determine the average threshold in days or hours.
+Step 3: Predict the remaining days to maintenance using the cumulative usage and average interval duration.
+Step 4: Append a new column "remaining_days_method2" containing results for each piece of equipment.
+Method 3: Health Score-based Approach
+Step 1 - Create a health score system:
+- Use features:
+    "temperature", "vibration", "pressure", "rotational_speed", "oil_viscosity".
+- Normalize and assign weights to features ("temperature_alert", "pressure_alert", "vibration_alert").
+- Calculate the health score (e.g., scale 0-100, with 100 as no maintenance needed).
+Step 2 - Monitor the health score over time:
+- Store historical trends to calculate the rate of decline.
+Step 3 - Predict remaining days:
+Use the formula:
+Remaining days = (Current Health Score −Threshold Score) / Rate of Decline per Day
+Step 4 - Add results to dataset:
+Append a new column "remaining_days_method3" containing results for each piece of equipment.
+
+Weighted Average Result
+Combine the predictions from all three methods using a weighted average:
+Final Remaining Days = (M₁ × W₁) + (M2 × W₂) + (M3 × W3)
+Assign weights based on reliability, e.g., w1 = 0.4, w2 = 0.3, w3 = 0.3
+Add the final result as a new column "final_remaining_days" to the dataset.
+
+XGBoost Model Training
+1. Train an XGBoost model using the calculated remaining days as the target (final_remaining_days) and the following features:
+"operating_hours", "production_rate", "downtime_hours", "temperature", "vibration", "pressure", "rotational_speed", "oil_viscosity", "alert_score", "criticality", "threshold", "equipment_age_days", "environment_condition_score", "total_score".
+2. Split the dataset into training and testing sets (e.g., 80-20 split).
+3. Evaluate the model using metrics like Mean Absolute Error (MAE) or Mean Squared Error (MSE).
+4. Save the trained XGBoost model for further use.
+
+Features to Use:
+1. equipment_id, timestamp, operating_hours, production_rate, downtime_hours.
+2. maintenance_date, cumulative_operating_hours, days_since_maintenance.
+3. temperature, pressure, vibration, rotational_speed, oil_viscosity, temperature_alert, pressure_alert, vibration_alert, alert_score.
+4. criticality, threshold, equipment_age_days, environment_condition_score, total_score.
+
+Expected Output
+A function or module that:
+1. Computes the remaining days to maintenance for each piece of equipment using Spark's distributed data processing capabilities.
+2. Appends new columns for the calculated results from each method and the weighted average.
+3. Trains and saves an XGBoost model using the calculated final_remaining_days as the target
+
+
+
