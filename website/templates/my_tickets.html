@@ -1,0 +1,72 @@
+<!-- filepath: /D:/Code/bus_reservation_system/website/templates/my_tickets.html -->
+{% extends "base.html" %}
+
+{% block title %}My Tickets{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>My Tickets</h1>
+    <table class="tickets-table">
+        <thead>
+            <tr>
+                <th>Ticket ID</th>
+                <th>Bus Number</th>
+                <th>Route</th>
+                <th>Username</th>
+                <th>Customer Name</th>
+                <th>Seats Reserved</th>
+                <th>Time</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>QR Code</th>
+                <th>Download</th>
+                {% if current_user.username == 'admin' %}
+                <th>Scan</th>
+                <th>Delete</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket[0] }}</td>
+                <td>{{ ticket[1] }}</td>
+                <td>{{ ticket[2] }}</td>
+                <td>{{ ticket[3] }}</td>
+                <td>{{ ticket[4] }}</td>
+                <td>{{ ticket[5] }}</td>
+                <td>{{ ticket[6] }}</td>
+                <td>
+                    {% if ticket[8] == 'block' %}
+                        150.000 VND
+                    {% else %}
+                        {{ ticket[5] * ticket[7] }} VND
+                    {% endif %}
+                </td>
+                <td>{{ ticket[9] }}</td>
+                <td>
+                    <img src="{{ url_for('view.generate_qr_code', bus_id=ticket[0], customer_name=ticket[4], seats_reserved=ticket[5]) }}" alt="QR Code" width="100" height="100">
+                </td>
+                <td>
+                    <a href="{{ url_for('view.generate_qr_code', bus_id=ticket[0], customer_name=ticket[4], seats_reserved=ticket[5]) }}" download="ticket_qr.png" class="button2">Download QR</a>
+                </td>
+                {% if current_user.username == 'admin' %}
+                <td>
+                    <form action="{{ url_for('admin.update_ticket_status', ticket_id=ticket[0]) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="button2">Scan the Ticket</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{ url_for('admin.remove_ticket', ticket_id=ticket[0]) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="buttonRed">Remove Ticket</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('view.home') }}" class="buttonBack">Back to Home</a>
+</div>
+
+{% endblock %}

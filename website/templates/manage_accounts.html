@@ -1,0 +1,47 @@
+<!-- filepath: /D:/Code/bus_reservation_system/website/templates/manage_accounts.html -->
+{% extends "base.html" %}
+
+{% block title %}Manage Accounts{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Manage Accounts</h1>
+    <table class="tickets-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Balance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>{{ user.balance }}</td>
+                <td>
+                    <form action="{{ url_for('admin.manage_accounts') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <input type="hidden" name="action" value="update_balance">
+                        <input type="number" name="amount" class="input" placeholder="Amount" required>
+                        <button type="submit" class="button2">Update Balance</button>
+                    </form>
+                    <form action="{{ url_for('admin.manage_accounts') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <input type="hidden" name="action" value="update_password">
+                        <input type="password" name="new_password" class="input" placeholder="New Password" required>
+                        <button type="submit" class="button2">Update Password</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

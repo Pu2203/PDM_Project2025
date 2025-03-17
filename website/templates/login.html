@@ -1,0 +1,17 @@
+<!-- filepath: /D:/Code/bus_reservation_system/website/templates/login.html -->
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
+<div class="login-container">
+    <h1>Login</h1>
+    <form action="{{ url_for('auth.login') }}" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Login</button>
+    </form>
+    <p><a href="{{ url_for('auth.register') }}">Don't have an account? Register here.</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Bus</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Bus {{ bus.bus_number }}</h1>
+        <form action="{{ url_for('admin.edit_bus', bus_id=bus.id) }}" method="POST">
+            <div class="form-row">
+                <label for="bus_number" class="label2">Bus Number:</label>
+                <input type="text" id="bus_number" class="input" name="bus_number" value="{{ bus.bus_number }}" required>
+            </div>
+
+            <div class="form-row">
+                <label for="route" class="label2">Route:</label>
+                <input type="text" id="route" class="input" name="route" value="{{ bus.route }}" required>
+            </div>
+
+            <div class="form-row">
+                <label for="total_seats" class="label2">Total Seats:</label>
+                <input type="number" id="total_seats" class="input" name="total_seats" value="{{ bus.total_seats }}" required>
+            </div>
+
+            <div class="form-row">
+                <label for="available_seats" class="label2">Available Seats:</label>
+                <input type="number" id="available_seats" class="input" name="available_seats" value="{{ bus.available_seats }}" required>
+            </div>
+
+            <div class="form-row">
+                <label for="time" class="label2">Time:</label>
+                <input type="text" id="time" class="input" name="time" value="{{ bus.time }}" required>
+            </div>
+
+            <div class="form-row">
+                <label for="price" class="label2">Price:</label>
+                <input type="number" id="price" class="input" name="price" value="{{ bus.price }}" step="0.01" required>
+            </div>
+
+            <div class="form-row">
+                <button type="submit" class="button2">Update Bus</button>
+            </div>
+        </form>
+        <form action="{{ url_for('admin.delete_bus', bus_id=bus.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this bus?');">
+            <div class="form-row">
+                <button type="submit" class="buttonRed">Delete Bus</button>
+            </div>
+        </form>
+        <a href="{{ url_for('view.view_buses_route') }}" class="buttonBack">Back to View Buses</a>
+    </div>
+</body>
+</html>

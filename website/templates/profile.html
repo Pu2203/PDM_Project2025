@@ -1,0 +1,78 @@
+<!-- filepath: /D:/Code/bus_reservation_system/website/templates/profile.html -->
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Profile</h1>
+    <table class="tickets-table">
+        <tr>
+            <td class="label-cell">Username:</td>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <td class="label-cell">Email:</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td class="label-cell">Phone Number:</td>
+            <td>{{ user.phone_number }}</td>
+        </tr>
+        <tr>
+            <td class="label-cell">Gender:</td>
+            <td>{{ user.gender }}</td>
+        </tr>
+        <tr>
+            <td class="label-cell">Balance:</td>
+            <td>{{ user.balance }}VND</td>
+        </tr>
+        <tr>
+            <td class="label-cell">User ID:</td>
+            <td>{{ user.id }}</td>
+        </tr>
+        <tr>
+            <td class="label-cell">Name:</td>
+            <td>{{ user.name }}</td>
+        </tr>
+    </table>
+
+
+
+    <h1>Edit Profile</h1>
+    <form action="{{ url_for('view.profile') }}" method="POST">
+        <div class="form-row">
+            <label for="username" class="label2">Username:</label>
+            <input type="text" id="username" class="input" name="username" value="{{ user.username }}" required>
+        </div>
+
+        <div class="form-row">
+            <label for="email" class="label2">Email:</label>
+            <input type="email" id="email" class="input" name="email" value="{{ user.email }}">
+        </div>
+
+        <div class="form-row">
+            <label for="phone_number" class="label2">Phone Number:</label>
+            <input type="text" id="phone_number" class="input" name="phone_number" value="{{ user.phone_number }}">
+        </div>
+
+        <div class="form-row">
+            <label for="gender" class="label2">Gender:</label>
+            <select id="gender" class="input2" name="gender">
+                <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Male</option>
+                <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Female</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label for="name" class="label2">Name:</label>
+            <input type="text" id="name" class="input" name="name" value="{{ user.name }}">
+        </div>
+        
+        <div class="form-row">
+            <button type="submit" class="button2">Save</button>
+        </div>
+    </form>
+    <a href="{{ url_for('view.home') }}" class="buttonBack">Back to Home</a>
+</div>
+{% endblock %}
