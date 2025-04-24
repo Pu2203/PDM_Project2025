@@ -1,28 +1,27 @@
 :root {
-    --primary-color: #2ecc71; /* Vibrant emerald green */
-    --secondary-color: #ecf0f1; /* Soft cloud white */
-    --accent-color: #3498db; /* Bright sapphire blue */
-    --text-color: #2c3e50; /* Deep midnight blue */
-    --error-color: #e74c3c; /* Rich coral red */
-    --shadow-color: rgba(44, 62, 80, 0.2);
-    --gradient: linear-gradient(135deg, #2ecc71, #3498db);
+    --primary-color: #28a745; /* Forest green */
+    --secondary-color: #e6f4ea; /* Light green */
+    --accent-color: #ffffff; /* White */
+    --text-color: #2c3e50; /* Dark slate */
+    --error-color: #dc3545; /* Red */
+    --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--gradient);
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, var(--primary-color), #52c234); /* Green gradient */
     color: var(--text-color);
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
 }
 
-/* Subtle animated background particles */
+/* Subtle bus ticket pattern in the background */
 body::before {
     content: '';
     position: absolute;
@@ -30,198 +29,191 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('/static/images/background.jpg') no-repeat center/cover;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" opacity="0.1"><path d="M10 10h30v30H10z" stroke="%23ffffff" stroke-width="2" fill="none"/><circle cx="25" cy="25" r="5" fill="%23ffffff"/></svg>') repeat;
     opacity: 0.1;
-    z-index: -1;
-    animation: fadeIn 2s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 0.1; }
+    z-index: 0;
 }
 
 .login-container {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px var(--shadow-color);
-    max-width: 450px;
-    width: 90%;
+    background: var(--accent-color);
+    padding: 35px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    width: 100%;
+    max-width: 380px;
     text-align: center;
     position: relative;
-    overflow: hidden;
-    animation: slideIn 0.8s ease-out;
+    z-index: 2; /* Higher z-index to ensure the form is above the bus */
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    animation: slideUp 0.5s ease-in-out;
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateY(50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+/* Animated yellow bus running under and behind the login container */
+body::after {
+    content: '';
+    position: absolute;
+    top: 50%; /* Adjust to position just below the login container */
+    transform: translateY(160px); /* Fine-tune vertical position to place it under the login container */
+    left: -150px;
+    width: 120px;
+    height: 60px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" viewBox="0 0 120 60"><rect x="10" y="20" width="100" height="30" rx="5" fill="%23ffca28"/><rect x="20" y="30" width="20" height="15" fill="%23000000"/><rect x="50" y="30" width="20" height="15" fill="%23000000"/><circle cx="30" cy="50" r="8" fill="%232c3e50"/><circle cx="90" cy="50" r="8" fill="%232c3e50"/></svg>');
+    animation: driveBus 10s infinite linear;
+    opacity: 0.3;
+    z-index: 1; /* Lower z-index to keep the bus behind the login container */
 }
 
-/* Decorative top border */
+@keyframes driveBus {
+    0% { transform: translateX(-150px) translateY(160px); }
+    100% { transform: translateX(100vw) translateY(160px); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
 .login-container::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    background: var(--gradient);
-    border-radius: 16px 16px 0 0;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 0 0 50% 50%;
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 .login-container h1 {
-    font-size: 2rem;
-    margin-bottom: 30px;
-    color: var(--text-color);
-    letter-spacing: 1px;
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    color: var(--primary-color);
+    font-weight: 500;
     position: relative;
-    text-transform: uppercase;
 }
 
-/* Animated underline for h1 */
 .login-container h1::after {
     content: '';
     position: absolute;
-    bottom: -10px;
+    bottom: -5px;
     left: 50%;
-    width: 60px;
-    height: 3px;
-    background: var(--primary-color);
     transform: translateX(-50%);
-    transition: width 0.3s ease;
-}
-
-.login-container h1:hover::after {
-    width: 100px;
+    width: 40px;
+    height: 2px;
+    background: var(--primary-color);
 }
 
 .login-container form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
-
-.login-container label {
-    font-weight: 600;
-    text-align: left;
-    color: var(--text-color);
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
+/* Add a subtle yellow highlight effect to the bus */
+body::after:hover {
+    filter: brightness(1.2);
+    opacity: 0.5;
+    transition: filter 0.3s ease, opacity 0.3s ease;
 }
-
-.login-container label:hover {
-    color: var(--primary-color);
+body::after {
+    content: '';
+    position: absolute;
+    top: 50%; /* Adjust to position just below the login container */
+    transform: translateY(160px); /* Fine-tune vertical position to place it under the login container */
+    left: -150px;
+    width: 120px;
+    height: 60px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" viewBox="0 0 120 60"><rect x="10" y="20" width="100" height="30" rx="5" fill="%23ffca28"/><rect x="20" y="30" width="20" height="15" fill="%23000000"/><rect x="50" y="30" width="20" height="15" fill="%23000000"/><circle cx="30" cy="50" r="8" fill="%232c3e50"/><circle cx="90" cy="50" r="8" fill="%232c3e50"/></svg>');
+    animation: driveBus 10s infinite linear;
+    opacity: 0.3;
+    z-index: 1; /* Lower z-index to keep the bus behind the login container */
 }
 
 .login-container input {
-    padding: 12px 15px;
-    border: none;
-    border-radius: 8px;
-    background: var(--secondary-color);
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
     font-size: 1rem;
     color: var(--text-color);
-    transition: all 0.3s ease;
-    box-shadow: inset 0 2px 4px var(--shadow-color);
+    background: var(--secondary-color);
+    transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .login-container input:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.3);
+    border-color: var(--primary-color);
     background: #fff;
 }
 
 .login-container button {
-    padding: 14px;
-    background: var(--gradient);
-    color: white;
+    padding: 12px;
+    background: var(--primary-color);
+    color: var(--accent-color);
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.login-container button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
-    transition: left 0.5s ease;
-}
-
-.login-container button:hover::before {
-    left: 100%;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .login-container button:hover {
+    background: #218838;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--shadow-color);
-}
-
-.login-container button:active {
-    transform: translateY(0);
 }
 
 .login-container p {
-    margin-top: 25px;
+    margin-top: 15px;
     font-size: 0.9rem;
     color: var(--text-color);
-    opacity: 0.8;
+}
+
+.login-container a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+    color: #218838;
 }
 
 .login-container ul {
     list-style-type: none;
     padding: 0;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .login-container li {
     color: var(--error-color);
     font-size: 0.9rem;
-    margin-bottom: 10px;
-    animation: shake 0.3s ease;
+    margin-bottom: 5px;
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* Responsive design */
 @media (max-width: 480px) {
     .login-container {
-        padding: 20px;
-        width: 95%;
+        padding: 25px;
+        max-width: 320px;
     }
 
     .login-container h1 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 
+    .login-container input,
     .login-container button {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    body::after {
+        transform: translateY(140px); /* Adjust bus position for smaller screens */
+    }
+
+    @keyframes driveBus {
+        0% { transform: translateX(-150px) translateY(140px); }
+        100% { transform: translateX(100vw) translateY(140px); }
     }
 }
