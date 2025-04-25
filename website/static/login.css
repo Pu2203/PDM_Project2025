@@ -139,7 +139,19 @@ body::after {
     background: var(--secondary-color);
     transition: border-color 0.3s ease, background 0.3s ease;
 }
+body::after {
+    width: 240px; /* Double the original width */
+    height: 120px; /* Double the original height */
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120"><rect x="20" y="40" width="200" height="60" rx="10" fill="%23ffca28"/><rect x="40" y="60" width="40" height="30" fill="%23000000"/><rect x="100" y="60" width="40" height="30" fill="%23000000"/><circle cx="60" cy="100" r="16" fill="%232c3e50"/><circle cx="180" cy="100" r="16" fill="%232c3e50"/></svg>');
+    animation: driveBus 10s infinite linear;
+    opacity: 0.3;
+    z-index: 1;
+}
 
+@keyframes driveBus {
+    0% { transform: translateX(-240px) translateY(160px); }
+    100% { transform: translateX(100vw) translateY(160px); }
+}
 .login-container input:focus {
     outline: none;
     border-color: var(--primary-color);
