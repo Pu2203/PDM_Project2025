@@ -1,5 +1,3 @@
-/* static/styles.css */
-
 :root {
     --primary-green: #4CAF50; /* Existing green */
     --hover-green: #45a049; /* Existing hover green */
@@ -8,7 +6,7 @@
     --text-dark: #333; /* Existing dark gray text */
     --shadow-color: rgba(0, 0, 0, 0.15); /* Enhanced shadow */
     --gradient: linear-gradient(135deg, #4CAF50, #66BB6A); /* Gradient for backgrounds */
-}
+}sửa này luôn 
 
 body {
     font-family: 'Roboto', sans-serif;
